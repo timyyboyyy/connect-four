@@ -211,60 +211,51 @@ void GameEngine::replayFromFile(const string &filename) {
         return;
     }
 
-    cout << "\n=== Replay: " << filename << " ===\n";
-    cout << "Spieler 1: " << players[0] << " (●)\n";
-    cout << "Spieler 2: " << players[1] << " (○)\n";
-    cout << "Hinweis: Enter = nächster Zug, q = abbrechen\n\n";
-
-    clearInputLine();
-    clearScreen();
+    clearInputLine();   // falls vorher cin >> benutzt wurde
 
     Board board;
     int moveNr = 1;
 
-    for (const auto &m : moves) {
+    auto printHeader = [&](const Move& m) {
+        cout << "=== Replay: " << filename << " ===\n";
         cout << "Zug " << moveNr << ": " << players[m.playerIndex]
              << " -> Spalte " << (m.col + 1);
         if (m.moveTimeMs > 0) cout << " (" << m.moveTimeMs << " ms)";
-        cout << "\n";
+        cout << "\n\n";
+    };
 
+    for (const auto &m : moves) {
+        // Validierung + Zielreihe (für Animation)
         int targetRow = board.getDropRow(m.col);
         if (targetRow == -1) {
             clearScreen();
+            cout << "=== Replay: " << filename << " ===\n\n";
             board.printPretty(symbols[0], symbols[1]);
-            cout << "Replay abgebrochen: Ungültiger Zug im Log (Spalte voll).\n";
+            cout << "Replay abgebrochen: Ungültiger Zug im Log (Spalte voll).\n\n";
             break;
         }
 
-        clearScreen();
+        // Animation (wenn du sie willst)
         for (int r = 0; r <= targetRow; ++r) {
             clearScreen();
-            cout << "=== Replay: " << filename << " ===\n";
-            cout << "Zug " << moveNr << ": " << players[m.playerIndex]
-                << " -> Spalte " << (m.col + 1);
-            if (m.moveTimeMs > 0) cout << " (" << m.moveTimeMs << " ms)";
-            cout << "\n\n";
-
+            printHeader(m);
             board.printPretty(symbols[0], symbols[1], r, m.col, symbols[m.playerIndex]);
-            std::this_thread::sleep_for(std::chrono::milliseconds(60));
+            this_thread::sleep_for(chrono::milliseconds(60));
         }
 
         // Final setzen
         board.dropDisc(m.col, symbols[m.playerIndex]);
 
-        // Finales Board anzeigen (einmal)
+        // Final anzeigen
         clearScreen();
-        cout << "=== Replay: " << filename << " ===\n";
-        cout << "Zug " << moveNr << ": " << players[m.playerIndex]
-            << " -> Spalte " << (m.col + 1);
-        if (m.moveTimeMs > 0) cout << " (" << m.moveTimeMs << " ms)";
-        cout << "\n\n";
+        printHeader(m);
         board.printPretty(symbols[0], symbols[1]);
 
-        // Schrittweise Wiedergabe
+        // Prompt für nächster Zug / Abbruch
+        cout << "Enter = nächster Zug | q/0 = abbrechen: ";
         string line;
         getline(cin, line);
-        if (!line.empty() && (line[0] == 'q' || line[0] == 'Q')) {
+        if (!line.empty() && (line[0] == 'q' || line[0] == 'Q' || line[0] == '0')) {
             cout << "Replay abgebrochen.\n\n";
             return;
         }
@@ -272,6 +263,7 @@ void GameEngine::replayFromFile(const string &filename) {
         ++moveNr;
     }
 
+    // Ergebnis am Ende
     cout << "Replay beendet. Ergebnis: ";
     if (result == 0) cout << "Unentschieden\n\n";
     else if (result == 1) cout << "Sieg " << players[0] << "\n\n";

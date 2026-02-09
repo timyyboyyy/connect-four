@@ -73,3 +73,8 @@ vector<string> listLogFiles(const string& folder) {
 void clearScreen() {
     cout << "\033[2J\033[H\033[3J" << flush;
 }
+
+void pressEnterToGoToMain() {
+    cout << "\nZurück zum Hauptmenue mit Enter...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
