@@ -75,6 +75,27 @@ void clearScreen() {
 }
 
 void pressEnterToGoToMain() {
-    cout << "\nZurück zum Hauptmenue mit Enter...";
+    cout << "\nZurück zum Hauptmenü mit Enter...";
+    cout.flush();
+
+    string dummy;
+    getline(cin, dummy);
+}
+
+void waitEnterAfterCin() {
+    cout << "\nZurück zum Hauptmenü mit Enter...";
+    cout.flush();
+
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    string dummy;
+    getline(cin, dummy);
+}
+
+void waitEnterPlain() {
+    cout << "\nZurück zum Hauptmenü mit Enter...";
+    cout.flush();
+
+    string dummy;
+    getline(cin, dummy);
 }

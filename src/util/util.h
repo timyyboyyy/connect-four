@@ -10,6 +10,8 @@ void pressEnterToContinue();
 void showCountdown(int seconds);
 void clearScreen();
 void pressEnterToGoToMain();
+void waitEnterAfterCin();
+void waitEnterPlain();
 
 std::vector<std::string> listLogFiles(const std::string& folder = "logs/");
 

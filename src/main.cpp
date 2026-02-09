@@ -33,7 +33,7 @@ int main() {
         if (choice == 1) {
             clearScreen();
             engine.startNewGame();
-            pressEnterToGoToMain();
+            waitEnterPlain();
         } else if (choice == 2) {
             clearScreen();
             auto logs = listLogFiles("logs");
@@ -69,16 +69,16 @@ int main() {
             }
 
             GameEngine::replayFromFile(logs[idx - 1]);
-            pressEnterToGoToMain();
+            waitEnterPlain();
         } else if (choice == 3) {
             clearScreen();
             tests.run();
-            pressEnterToGoToMain();
+            waitEnterAfterCin();
         } else if (choice == 4) {
             clearScreen();
             auto stats = Stats::loadAggregated("logs/stats.csv");
             Stats::printReport(stats);
-            pressEnterToGoToMain();
+            waitEnterAfterCin();
         } else if (choice == 5) {
             cout << "Beenden.\n";
             break;

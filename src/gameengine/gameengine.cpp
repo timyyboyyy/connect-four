@@ -77,7 +77,7 @@ void GameEngine::startNewGame() {
     moves.clear();
     currentPlayer = 0;
 
-    clearInputLine(); // falls vorher cin >> genutzt wurde
+    clearInputLine(); 
     cout << "\n=== Neues Spiel ===\n";
     cout << "Name Spieler 1 (Symbol X / Anzeige ●): ";
     getline(cin, players[0]);
@@ -198,6 +198,14 @@ void GameEngine::startNewGame() {
     } else {
         cout << "Fehler: Log konnte nicht gespeichert werden.\n\n";
     }
+
+    string plyagain;
+    cout << "Nochmals spielen? (j/n): ";
+    cin >> plyagain;
+    clearInputLine();
+    if (!plyagain.empty() && (plyagain[0] == 'j' || plyagain[0] == 'J')) {
+        startNewGame();
+    } 
 }
 
 void GameEngine::replayFromFile(const string &filename) {
@@ -224,7 +232,8 @@ void GameEngine::replayFromFile(const string &filename) {
         cout << "\n\n";
     };
 
-    for (const auto &m : moves) {
+    for (size_t i = 0; i < moves.size(); ++i) {
+        const auto& m = moves[i];
         // Validierung + Zielreihe (für Animation)
         int targetRow = board.getDropRow(m.col);
         if (targetRow == -1) {
@@ -252,12 +261,15 @@ void GameEngine::replayFromFile(const string &filename) {
         board.printPretty(symbols[0], symbols[1]);
 
         // Prompt für nächster Zug / Abbruch
-        cout << "Enter = nächster Zug | q/0 = abbrechen: ";
-        string line;
-        getline(cin, line);
-        if (!line.empty() && (line[0] == 'q' || line[0] == 'Q' || line[0] == '0')) {
-            cout << "Replay abgebrochen.\n\n";
-            return;
+        bool isLast = (i + 1 == moves.size());
+        if (!isLast) {
+            cout << "Enter = naechster Zug | q/0 = abbrechen: ";
+            string line;
+            getline(cin, line);
+            if (!line.empty() && (line[0] == 'q' || line[0] == 'Q' || line[0] == '0')) {
+                cout << "Replay abgebrochen.\n\n";
+                return;
+            }
         }
 
         ++moveNr;
@@ -269,6 +281,7 @@ void GameEngine::replayFromFile(const string &filename) {
     else if (result == 1) cout << "Sieg " << players[0] << "\n\n";
     else if (result == 2) cout << "Sieg " << players[1] << "\n\n";
     else cout << "Unbekannt\n\n";
+    return;
 }
 
 
