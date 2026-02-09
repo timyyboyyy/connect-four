@@ -10,6 +10,7 @@
 #include "gamelogger/gamelogger.h"
 #include "move.h"
 #include "util/util.h"
+#include "stats/stats.h"
 
 #if __has_include(<filesystem>)
   #include <filesystem>
@@ -41,6 +42,7 @@ namespace {
     //  0..6 => gültige Spalte
     int readColumnOrAbort(const string &playerName) {
         while (true) {
+            cout << "Du hast " << (TURN_LIMIT_MS/1000) << " Sekunden.\n";
             cout << playerName << " wählt Spalte (1-7) | 0/q = Abbruch: ";
             string input;
             cin >> input;
@@ -99,6 +101,14 @@ void GameEngine::startNewGame() {
         auto tEnd = chrono::steady_clock::now();
         long long ms = chrono::duration_cast<chrono::milliseconds>(tEnd - tStart).count();
 
+        if (ms > TURN_LIMIT_MS) {
+            cout << "Zeitlimit überschritten (" << ms << " ms > " << TURN_LIMIT_MS << " ms).\n";
+            cout << "Sieg für " << players[1 - currentPlayer] << "!\n";
+            result = (currentPlayer == 0) ? 2 : 1;
+            gameOver = true;
+            break;
+        }
+
         if (col == -1) {
             cout << "Spiel wurde abgebrochen. Kein Log wird gespeichert.\n\n";
             clearInputLine();
@@ -131,6 +141,39 @@ void GameEngine::startNewGame() {
             currentPlayer = 1 - currentPlayer;
         }
     }
+
+    // Statistiken sammeln
+    long long totalGameMs = 0;
+    long long movesP0 = 0, movesP1 = 0;
+    long long totalMsP0 = 0, totalMsP1 = 0;
+    long long fastestP0 = -1, fastestP1 = -1;
+    long long slowestP0 = -1, slowestP1 = -1;
+
+    auto upd = [](long long v, long long& mn, long long& mx){
+        if (mn < 0 || v < mn) mn = v;
+        if (mx < 0 || v > mx) mx = v;
+    };
+
+    for (const auto& m : moves) {
+        totalGameMs += m.moveTimeMs;
+        if (m.playerIndex == 0) {
+            movesP0++; totalMsP0 += m.moveTimeMs;
+            upd(m.moveTimeMs, fastestP0, slowestP0);
+        } else {
+            movesP1++; totalMsP1 += m.moveTimeMs;
+            upd(m.moveTimeMs, fastestP1, slowestP1);
+        }
+    }
+
+    // Spiel in stats.csv schreiben
+    #if HAS_FILESYSTEM
+    try { fs::create_directories("logs"); } catch (...) {}
+    #endif
+
+    Stats::appendGame("logs/stats.csv", players, result, totalGameMs,
+                    movesP0, movesP1, totalMsP0, totalMsP1,
+                    fastestP0, fastestP1, slowestP0, slowestP1);
+
 
     // speichern
     string fn = makeLogFileName();

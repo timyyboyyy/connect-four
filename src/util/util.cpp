@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 #if __has_include(<filesystem>)
   #include <filesystem>
@@ -33,6 +35,15 @@ bool isNumber(const string& s) {
 void pressEnterToContinue() {
     cout << "Weiter mit Enter...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
+void showCountdown(int seconds) {
+    using namespace std;
+    for (int i = seconds; i > 0; --i) {
+        cout << "\rZeitlimit: " << i << "s " << flush;
+        this_thread::sleep_for(chrono::seconds(1));
+    }
+    cout << "\rZeitlimit: 0s \n";
 }
 
 vector<string> listLogFiles(const string& folder) {

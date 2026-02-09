@@ -5,6 +5,7 @@
 #include "gameengine/gameengine.h"
 #include "testsuite/testsuite.h"
 #include "util/util.h"
+#include "stats/stats.h"
 
 using namespace std;
 
@@ -17,7 +18,8 @@ int main() {
         cout << "1) Neues Spiel starten\n";
         cout << "2) Spiel aus Logdatei wiederholen\n";
         cout << "3) Tests ausführen\n";
-        cout << "4) Beenden\n";
+        cout << "4) Statistiken anzeigen\n";
+        cout << "5) Beenden\n";
         cout << "Auswahl: ";
 
         int choice;
@@ -67,6 +69,9 @@ int main() {
         } else if (choice == 3) {
             tests.run();
         } else if (choice == 4) {
+            auto stats = Stats::loadAggregated("logs/stats.csv");
+            Stats::printReport(stats);
+        } else if (choice == 5) {
             cout << "Beenden.\n";
             break;
         } else {

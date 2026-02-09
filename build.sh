@@ -10,6 +10,7 @@ g++ -std=c++17 -O2 -Wall -Wextra \
   src/gamelogger/*.cpp \
   src/testsuite/*.cpp \
   src/util/*.cpp \
+  src/stats/*.cpp \
   -o build/vier_gewinnt
 
 
