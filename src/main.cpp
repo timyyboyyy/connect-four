@@ -14,6 +14,7 @@ int main() {
     TestSuite tests;
 
     while (true) {
+        clearScreen();
         cout << "==== 4 GEWINNT - SPIELENGINE ====\n";
         cout << "1) Neues Spiel starten\n";
         cout << "2) Spiel aus Logdatei wiederholen\n";
@@ -30,8 +31,11 @@ int main() {
         }
 
         if (choice == 1) {
+            clearScreen();
             engine.startNewGame();
+            pressEnterToGoToMain();
         } else if (choice == 2) {
+            clearScreen();
             auto logs = listLogFiles("logs");
 
             if (logs.empty()) {
@@ -65,17 +69,21 @@ int main() {
             }
 
             GameEngine::replayFromFile(logs[idx - 1]);
-
+            pressEnterToGoToMain();
         } else if (choice == 3) {
+            clearScreen();
             tests.run();
+            pressEnterToGoToMain();
         } else if (choice == 4) {
+            clearScreen();
             auto stats = Stats::loadAggregated("logs/stats.csv");
             Stats::printReport(stats);
+            pressEnterToGoToMain();
         } else if (choice == 5) {
             cout << "Beenden.\n";
             break;
         } else {
-            cout << "Bitte 1-4 wählen.\n";
+            cout << "Bitte 1-5 wählen.\n";
         }
     }
 
