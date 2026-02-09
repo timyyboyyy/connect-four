@@ -69,3 +69,7 @@ vector<string> listLogFiles(const string& folder) {
 
     return files;
 }
+
+void clearScreen() {
+    cout << "\033[2J\033[H\033[3J" << flush;
+}

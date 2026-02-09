@@ -66,24 +66,41 @@ bool Board::checkWin(char s) const {
     return false;
 }
 
-void Board::printPretty(char p1Symbol, char p2Symbol) const {
-    // Legende: Wir zeigen statt X/O optional ●/○ im Print.
-    auto render = [&](char cell) -> string {
-        if (cell == p1Symbol) return "●";  // Spieler 1
-        if (cell == p2Symbol) return "○";  // Spieler 2
+int Board::getDropRow(int col) const {
+    if (col < 0 || col >= COLS) return -1;
+    if (grid[0][col] != ' ') return -1;
+
+    for (int r = ROWS - 1; r >= 0; --r) {
+        if (grid[r][col] == ' ') return r;
+    }
+    return -1;
+}
+
+void Board::printPretty(char p1Symbol, char p2Symbol,
+                        int ghostRow, int ghostCol, char ghostSymbol) const {
+    auto renderCell = [&](int r, int c) -> std::string {
+        if (r == ghostRow && c == ghostCol && ghostSymbol != '\0') {
+            if (ghostSymbol == p1Symbol) return "●";
+            if (ghostSymbol == p2Symbol) return "○";
+            return " ";
+        }
+
+        char cell = grid[r][c];
+        if (cell == p1Symbol) return "●";
+        if (cell == p2Symbol) return "○";
         return " ";
     };
 
-    cout << "\n    1   2   3   4   5   6   7\n";
-    cout << "  ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╗\n";
+    std::cout << "\n    1   2   3   4   5   6   7\n";
+    std::cout << "  ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╗\n";
     for (int r = 0; r < ROWS; ++r) {
-        cout << "  ║";
+        std::cout << "  ║";
         for (int c = 0; c < COLS; ++c) {
-            cout << " " << render(grid[r][c]) << " ║";
+            std::cout << " " << renderCell(r, c) << " ║";
         }
-        cout << "\n";
+        std::cout << "\n";
         if (r != ROWS - 1)
-            cout << "  ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╣\n";
+            std::cout << "  ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╣\n";
     }
-    cout << "  ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╝\n\n";
+    std::cout << "  ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╝\n\n";
 }

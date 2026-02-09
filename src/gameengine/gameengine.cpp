@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <thread>
+#include <chrono>
 
 #include "board/board.h"
 #include "gamelogger/gamelogger.h"
@@ -89,6 +91,7 @@ void GameEngine::startNewGame() {
     int result = -1; // 0 draw, 1 p0 win, 2 p1 win, -1 none
 
     while (!gameOver) {
+        clearScreen();
         board.printPretty(symbols[0], symbols[1]);
 
         const string &pName = players[currentPlayer];
@@ -115,20 +118,31 @@ void GameEngine::startNewGame() {
             return; // zurück ins Menü
         }
 
-        if (!board.isValidColumn(col)) {
+        int targetRow = board.getDropRow(col);
+        if (targetRow == -1) {
             cout << "Diese Spalte ist voll. Bitte eine andere Spalte wählen.\n";
             continue;
         }
 
-        if (board.dropDisc(col, sym) == -1) {
+        // Animation: Stein fällt von oben bis targetRow
+        for (int r = 0; r <= targetRow; ++r) {
+            clearScreen();
+            board.printPretty(symbols[0], symbols[1], r, col, sym);
+            this_thread::sleep_for(chrono::milliseconds(60));
+        }
+
+        // Final wirklich setzen
+        int finalRow = board.dropDisc(col, sym);
+        if (finalRow == -1) {
             cout << "Interner Fehler beim Setzen. Bitte erneut.\n";
             continue;
         }
 
+        // Logging wie bisher
         moves.push_back({currentPlayer, col, ms});
 
         if (board.checkWin(sym)) {
-            board.printPretty(symbols[0], symbols[1]);
+            //board.printPretty(symbols[0], symbols[1]);
             cout << "Sieg für " << pName << "!\n";
             result = currentPlayer + 1;
             gameOver = true;
@@ -235,3 +249,5 @@ void GameEngine::replayFromFile(const string &filename) {
     else if (result == 2) cout << "Sieg " << players[1] << "\n\n";
     else cout << "Unbekannt\n\n";
 }
+
+
