@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "gameengine/gameengine.h"
 #include "testsuite/testsuite.h"
@@ -29,10 +30,40 @@ int main() {
         if (choice == 1) {
             engine.startNewGame();
         } else if (choice == 2) {
-            cout << "Dateiname (z.B. logs/connect4_YYYYMMDD_HHMMSS.log): ";
-            string fn;
-            cin >> fn;
-            GameEngine::replayFromFile(fn);
+            auto logs = listLogFiles("logs");
+
+            if (logs.empty()) {
+                cout << "Keine Logdateien im Ordner 'logs/' gefunden.\n\n";
+                continue;
+            }
+
+            cout << "\nVerfügbare Logdateien:\n";
+            for (size_t i = 0; i < logs.size(); ++i) {
+                // schöner anzeigen ohne "logs/"
+                std::string display = logs[i];
+                if (display.rfind("logs/", 0) == 0) display = display.substr(5);
+                cout << "  " << (i + 1) << ") " << display << "\n";
+            }
+
+            cout << "\nNummer wählen (1-" << logs.size() << ") oder 0 zum Abbrechen: ";
+            int idx;
+            if (!(cin >> idx)) {
+                cout << "Ungültige Eingabe.\n";
+                clearInputLine();
+                continue;
+            }
+
+            if (idx == 0) {
+                cout << "Abgebrochen.\n\n";
+                continue;
+            }
+            if (idx < 1 || static_cast<size_t>(idx) > logs.size()) {
+                cout << "Bitte eine gültige Nummer wählen.\n\n";
+                continue;
+            }
+
+            GameEngine::replayFromFile(logs[idx - 1]);
+
         } else if (choice == 3) {
             tests.run();
         } else if (choice == 4) {

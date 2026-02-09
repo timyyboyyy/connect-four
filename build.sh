@@ -14,4 +14,4 @@ g++ -std=c++17 -O2 -Wall -Wextra \
 
 
 echo "Build OK."
-echo "Start: ./build/vier_gewinnt"
+echo "Start: ./run.sh"
