@@ -8,6 +8,7 @@ Plattform ist Linux. Als Programmiersprache wird C++ im Standard C++17 verwendet
 
 ## Projektstruktur
 
+```plaintext
 .
 ├─ src/
 │  └─ main.cpp  
@@ -16,6 +17,7 @@ Plattform ist Linux. Als Programmiersprache wird C++ im Standard C++17 verwendet
 ├─ build.sh  
 ├─ run.sh  
 └─ README.md  
+```
 
 ## Kompilieren
 
