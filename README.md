@@ -51,7 +51,7 @@ bash --version
 
 ### macOS
 
-Auf macOS ist standartmäßig clang++ aüber die Xcode Command Line Tools verfügbar.
+Auf macOS ist standartmäßig clang++ über die Xcode Command Line Tools verfügbar.
 
 ```bash
 xcode-select --install
@@ -72,8 +72,15 @@ g++-14 --version
 
 Mit Skripten (empfohlen):
 ```bash
-chmod +x build.sh run.sh
-./build.sh
+chmod +x build_linux.sh build_mac.sh run.sh
+
+#Linux
+./build_linux.sh
+
+#macOS
+./build_mac.sh
+
+#Ausführen
 ./run.sh
 ```
 
