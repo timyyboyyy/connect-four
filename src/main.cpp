@@ -33,6 +33,7 @@ int main() {
 
             if (logs.empty()) {
                 cout << "Keine Logdateien im Ordner 'logs/' gefunden.\n\n";
+                waitEnterPlain();
                 continue;
             }
 

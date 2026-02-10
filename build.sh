@@ -12,7 +12,7 @@ g++ -std=c++17 -O2 -Wall -Wextra \
   src/util/*.cpp \
   src/stats/*.cpp \
   src/mainmenu/*.cpp \
-  -o build/four_connect
+  -o build/connect_four
 
 
 echo "Build OK."

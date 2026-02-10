@@ -1,2 +1,2 @@
 #!/bin/bash
-./build/four_connect
+./build/connect_four
