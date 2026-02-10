@@ -82,18 +82,6 @@ chmod +x build_linux.sh build_mac.sh run.sh
 ./run.sh
 ```
 
-Manuell Linux/WSL (g++):
-```bash
-g++ -std=c++17 -O2 -Wall -Wextra -o connect4 main.cpp
-./connect4
-```
-
-Manuell macOS (clang++):
-```bash
-clang++ -std=c++17 -O2 -Wall -Wextra -o connect4 main.cpp
-./connect4
-```
-
 ---
 
 ## Bedienung
