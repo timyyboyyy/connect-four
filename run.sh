@@ -1,2 +1,2 @@
 #!/bin/bash
-./build/vier_gewinnt
+./build/four_connect
