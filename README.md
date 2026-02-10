@@ -27,6 +27,26 @@ Enthalten sind **Menü**, **2-Spieler-Spiel** (7×6), **Zugvalidierung**, **Gewi
 - **g++ mit C++17** (oder kompatibler Compiler)
 - `bash`
 
+
+### Installation g++ mit C++17 auf Debian/Ubuntu (falls nicht vorhanden)
+
+```bash
+sudo apt update && sudo apt upgrade
+sudo apt install -y build-essential g++ bash
+
+g++ --version
+bash --version
+```
+
+### Installation g++ mit C++17 auf Fedora (falls nicht vorhanden)
+
+```bash
+sudo dnf install -y gcc-c++ bash
+
+g++ --version
+bash --version
+```
+
 ---
 
 ## Build & Run
