@@ -64,6 +64,23 @@ namespace {
             return col - 1;
         }
     }
+
+    void showGameOverScreen(const Board& board,
+                            char p1Symbol, char p2Symbol,
+                            const std::string& headline,
+                            const std::string& detail) {
+        clearScreen();
+        board.printPretty(p1Symbol, p2Symbol);
+
+        cout << "========================================\n";
+        cout << "               SPIEL ENDE\n";
+        cout << "========================================\n";
+        cout << headline << "\n";
+        if (!detail.empty()) cout << detail << "\n";
+        cout << "========================================\n\n";
+
+        pressEnterToContinue();
+    }
 }
 
 void GameEngine::startNewGame() {
@@ -106,18 +123,28 @@ void GameEngine::startNewGame() {
         long long ms = chrono::duration_cast<chrono::milliseconds>(tEnd - tStart).count();
 
         if (ms > TURN_LIMIT_MS) {
-            cout << "Zeitlimit überschritten (" << ms << " ms > " << TURN_LIMIT_MS << " ms).\n";
-            cout << "Sieg für " << players[1 - currentPlayer] << "!\n";
+            string winner = players[1 - currentPlayer];
             result = (currentPlayer == 0) ? 2 : 1;
             gameOver = true;
+
+            showGameOverScreen(
+                board, symbols[0], symbols[1],
+                "Zeitlimit überschritten!",
+                "Sieg für " + winner + " (zu langsam: " + to_string(ms) + " ms)."
+            );
             break;
         }
 
+
         if (col == -1) {
-            cout << "Spiel wurde abgebrochen. Kein Log wird gespeichert.\n\n";
-            clearInputLine();
+            showGameOverScreen(
+                board, symbols[0], symbols[1],
+                "Spiel wurde abgebrochen.",
+                "Kein Log wird gespeichert."
+            );
             return; // zurück ins Menü
         }
+
 
         int targetRow = board.getDropRow(col);
         if (targetRow == -1) {
@@ -145,18 +172,27 @@ void GameEngine::startNewGame() {
         moves.push_back({currentPlayer, col, ms});
 
         if (board.checkWin(sym)) {
-            //board.printPretty(symbols[0], symbols[1]);
-            cout << "Sieg für " << pName << "!\n";
             result = currentPlayer + 1;
             gameOver = true;
+
+            showGameOverScreen(
+                board, symbols[0], symbols[1],
+                "Sieg!",
+                "Gewonnen hat: " + pName
+            );
         } else if (board.isFull()) {
-            //board.printPretty(symbols[0], symbols[1]);
-            cout << "Unentschieden (Brett voll).\n";
             result = 0;
             gameOver = true;
+
+            showGameOverScreen(
+                board, symbols[0], symbols[1],
+                "Unentschieden!",
+                "Das Brett ist voll."
+            );
         } else {
             currentPlayer = 1 - currentPlayer;
         }
+
     }
 
     // Statistiken sammeln
