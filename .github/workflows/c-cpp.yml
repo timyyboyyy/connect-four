@@ -1,23 +1,46 @@
-name: C/C++ CI
+name: C++ CI
 
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - ".github/workflows/c-cpp.yml"
+      - "src/**"
+      - "build_linux.sh"
+      - "build_mac.sh"
+      - "run.sh"
   pull_request:
     branches: [ "main" ]
+    paths:
+      - ".github/workflows/c-cpp.yml"
+      - "src/**"
+      - "build_linux.sh"
+      - "build_mac.sh"
+      - "run.sh"
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Skripte ausführbar machen
+        run: chmod +x build_linux.sh build_mac.sh
+
+      - name: Build unter Linux
+        if: runner.os == 'Linux'
+        run: ./build_linux.sh
+
+      - name: Build unter macOS
+        if: runner.os == 'macOS'
+        run: ./build_mac.sh
+
+      - name: Prüfen, ob Binary erzeugt wurde
+        run: test -f build/connect_four
